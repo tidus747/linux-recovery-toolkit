@@ -3,7 +3,7 @@
 A conservative toolkit for auditing, backing up and rebuilding Linux systems without carrying years of hidden state from one installation to the next.
 
 <p align="center">
-  <img src="assets/mascot/linux-recovery-bot.webp" alt="Linux Recovery Toolkit maintenance bot" width="240">
+  <img src="assets/mascot/linux-recovery-bot.png" alt="Linux Recovery Toolkit maintenance bot" width="240">
 </p>
 
 <p align="center">
