@@ -47,17 +47,26 @@ Read-only inspection tools:
 
 ### v0.2 - Backup and verify
 
-The next layer adds guarded backup tooling:
+Guarded backup tooling:
 
 - `backup-home.sh` - rsync backup helper that is dry-run by default
 - `verify-backup.sh` - checksum-based rsync verification without modifying the backup
 - optional exclusion patterns
 - documentation for encrypted HOME recovery
 
+### v0.3 - Rebuild inventory and preflight
+
+Read-only tools for preparing a clean reinstall:
+
+- `inventory-packages.sh` - packages and applications installed through common package managers
+- `inventory-services.sh` - enabled systemd services and timers
+- `inventory-all.sh` - collect rebuild inventories into a private local report directory
+- `preflight-reinstall.sh` - verify that source and backup are not on the same physical disk and report other reinstall checks
+
 ## Workflow
 
 ```text
-Audit -> Assess -> Classify -> Back up -> Verify -> Install -> Restore -> Rebuild
+Audit -> Assess -> Classify -> Back up -> Verify -> Inventory -> Preflight -> Install -> Restore -> Rebuild
 ```
 
 ## Repository layout
@@ -66,11 +75,12 @@ Audit -> Assess -> Classify -> Back up -> Verify -> Install -> Restore -> Rebuil
 .
 |-- assets/
 |   `-- mascot/
-|       `-- linux-recovery-bot.webp
+|       `-- linux-recovery-bot.png
 |-- config/
 |   `-- backup.example.exclude
 |-- docs/
 |   |-- backup-and-verify.md
+|   |-- rebuild-inventory.md
 |   `-- recovery-workflow.md
 |-- scripts/
 |   |-- audit-all.sh
@@ -78,6 +88,10 @@ Audit -> Assess -> Classify -> Back up -> Verify -> Install -> Restore -> Rebuil
 |   |-- audit-storage.sh
 |   |-- audit-system.sh
 |   |-- backup-home.sh
+|   |-- inventory-all.sh
+|   |-- inventory-packages.sh
+|   |-- inventory-services.sh
+|   |-- preflight-reinstall.sh
 |   |-- smart-health.sh
 |   `-- verify-backup.sh
 |-- reports/              # local output, ignored by Git
@@ -137,9 +151,38 @@ bash ./scripts/verify-backup.sh \
 
 See [docs/backup-and-verify.md](docs/backup-and-verify.md) before using these tools for a real migration.
 
+## Rebuild inventory
+
+Collect package and systemd inventories:
+
+```bash
+bash ./scripts/inventory-all.sh
+```
+
+Or run the reports individually:
+
+```bash
+bash ./scripts/inventory-packages.sh
+bash ./scripts/inventory-services.sh
+```
+
+## Reinstall preflight
+
+Before repartitioning or formatting a machine:
+
+```bash
+bash ./scripts/preflight-reinstall.sh \
+    --source "$HOME" \
+    --backup /mnt/backup/home
+```
+
+The preflight is read-only. Its most important check is confirming that the source and backup do not share the same physical disk.
+
+See [docs/rebuild-inventory.md](docs/rebuild-inventory.md) for details.
+
 ## Privacy
 
-Audit output can contain information that should not be published, including directory names, mount paths, installed software and hardware details.
+Audit and inventory output can contain information that should not be published, including directory names, mount paths, installed software and enabled services.
 
 The repository stores tools and documentation only. Real machine reports, backups, inventories, secrets, SSH keys, GPG material and personal configuration must remain outside version control.
 
@@ -157,6 +200,8 @@ destructive -> explicit, guarded destructive operations
 ```
 
 The backup helper is dry-run by default and requires `--apply` before writing files.
+
+The reinstall preflight is read-only and never formats, mounts or unmounts storage.
 
 ## License
 
