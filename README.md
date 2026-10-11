@@ -55,16 +55,16 @@ Clone the repository and run the individual audits:
 git clone https://github.com/tidus747/linux-recovery-toolkit.git
 cd linux-recovery-toolkit
 
-./scripts/audit-system.sh
-./scripts/audit-storage.sh
-./scripts/audit-home.sh
-./scripts/smart-health.sh
+bash ./scripts/audit-system.sh
+bash ./scripts/audit-storage.sh
+bash ./scripts/audit-home.sh
+bash ./scripts/smart-health.sh
 ```
 
 Or collect them together:
 
 ```bash
-./scripts/audit-all.sh
+bash ./scripts/audit-all.sh
 ```
 
 Reports are written below `reports/`, which is deliberately excluded from Git.
