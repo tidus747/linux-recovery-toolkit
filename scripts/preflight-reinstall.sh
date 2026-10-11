@@ -111,7 +111,7 @@ while (( $# > 0 )); do
     esac
 done
 
-for command_name in findmnt lsblk readlink df; do
+for command_name in findmnt lsblk readlink df comm grep sed awk; do
     command_exists "$command_name" || die "Required command not found: $command_name"
 done
 
