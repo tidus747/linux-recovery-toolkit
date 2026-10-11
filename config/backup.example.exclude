@@ -1,0 +1,8 @@
+# Optional example exclusions for backup-home.sh and verify-backup.sh.
+# Nothing is excluded by default. Review every line before using this file.
+
+# Rebuildable user cache
+.cache/
+
+# Desktop trash
+.local/share/Trash/
