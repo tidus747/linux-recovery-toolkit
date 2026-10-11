@@ -1,0 +1,23 @@
+# Local audit output
+reports/
+output/
+inventory/
+
+# Machine-specific configuration
+*.local.conf
+*.private.conf
+.env
+
+# Logs and generated reports
+*.log
+*.report
+
+# Backup manifests and checksum databases
+backup-manifest*
+checksums-*.txt
+
+# Editor / OS noise
+.vscode/
+.idea/
+*~
+.DS_Store
