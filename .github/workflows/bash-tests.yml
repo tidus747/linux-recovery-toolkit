@@ -1,0 +1,30 @@
+name: Bash Safety Tests
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/**'
+      - 'tests/**'
+      - '.github/workflows/bash-tests.yml'
+  pull_request:
+    paths:
+      - 'scripts/**'
+      - 'tests/**'
+      - '.github/workflows/bash-tests.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Bash syntax
+        run: |
+          for script in scripts/*.sh tests/*.sh; do
+            bash -n "$script"
+          done
+      - name: Regression tests
+        run: bash tests/safety-smoke.sh
