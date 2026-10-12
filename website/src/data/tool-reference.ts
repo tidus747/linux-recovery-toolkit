@@ -1,0 +1,135 @@
+// Maintained against the v0.3 Bash scripts in scripts/. Changes to CLI behavior must update this table.
+export const toolReference = [
+  {
+    "slug": "audit-system",
+    "title": "System audit",
+    "impact": "Read-only",
+    "arguments": "No arguments",
+    "requirements": "uname, awk, head; optional lscpu, free, findmnt, systemd, systemctl",
+    "example": "bash ./scripts/audit-system.sh",
+    "details": "Inspects /etc/os-release, kernel, architecture, systemd, desktop environment, CPU, RAM, root mount, package managers and network management. No hostnames or MAC addresses are requested.",
+    "effects": "Outputs to stdout; does not write files.",
+    "exit": "No explicit final failure aggregation. A zero exit code does not guarantee every optional diagnostic succeeded.",
+    "cautions": "The script queries the currently booted system; it does not inspect an offline installation. It uses optional utilities when present."
+  },
+  {
+    "slug": "audit-storage",
+    "title": "Storage overview",
+    "impact": "Read-only",
+    "arguments": "No arguments",
+    "requirements": "lsblk required; findmnt and df used",
+    "example": "bash ./scripts/audit-storage.sh",
+    "details": "Prints block-device names, size, type, filesystem, mounts, model and transport. Lists selected mounted filesystem types and disk-space usage.",
+    "effects": "stdout; device names and mount paths may be identifying.",
+    "exit": "Exits 1 if lsblk is absent. Other command failures are not comprehensively aggregated.",
+    "cautions": "UUID, PARTUUID and serial number columns are intentionally omitted, but paths and mount names still merit redaction."
+  },
+  {
+    "slug": "audit-home",
+    "title": "HOME usage",
+    "impact": "Read-only",
+    "arguments": "No arguments",
+    "requirements": "HOME environment variable, du, sed, sort",
+    "example": "bash ./scripts/audit-home.sh",
+    "details": "Reports total and first-level storage usage below the active user's HOME, including hidden directories.",
+    "effects": "stdout may expose directory names; some paths are replaced with <HOME>.",
+    "exit": "Exits 1 for missing or invalid HOME. The du pipeline can hide read errors; review missing entries.",
+    "cautions": "Running under sudo can change HOME and inspect a different account. Permission failures are suppressed in du."
+  },
+  {
+    "slug": "smart-health",
+    "title": "SMART health",
+    "impact": "Read-only, uses sudo",
+    "arguments": "Optional one or more block devices as positional arguments",
+    "requirements": "smartctl (smartmontools), lsblk, awk, sudo",
+    "example": "bash ./scripts/smart-health.sh /dev/sdX",
+    "details": "For each selected device, prints limited SMART health/attribute/self-test lines; with no arguments, enumerates disks using lsblk.",
+    "effects": "stdout; disk paths and models are shown, serials and WWNs are not requested.",
+    "exit": "Exits 1 when required tools or all disks are absent; currently does not properly propagate smartctl failures through awk.",
+    "cautions": "USB/SATA bridges may conceal SMART or require a smartctl -d setting. An empty or incomplete report is UNKNOWN, not healthy. No SMART self-test is launched."
+  },
+  {
+    "slug": "audit-all",
+    "title": "Collect audit reports",
+    "impact": "Writes local reports",
+    "arguments": "No arguments",
+    "requirements": "date, mkdir, bash and helper scripts; SMART requires smartmontools/sudo",
+    "example": "bash ./scripts/audit-all.sh",
+    "details": "Collects system, storage, HOME and SMART reports into a timestamped local directory.",
+    "effects": "Creates reports/YYYYMMDD-HHMMSS/*.txt under the repository. Reports are Git-ignored, but not necessarily private by permissions.",
+    "exit": "Current implementation may return 0 despite child failures. Current checkout stores helper scripts as non-executable, so direct invocation can fail; tracked in issue #13.",
+    "cautions": "Use individual scripts for reliable inspection until issue #13 is resolved. Never publish raw reports."
+  },
+  {
+    "slug": "backup-home",
+    "title": "Back up one HOME",
+    "impact": "Dry-run by default; --apply writes",
+    "arguments": "--source DIR, --destination DIR, optional --exclude-from FILE, --apply, --help",
+    "requirements": "rsync, readlink; optional findmnt",
+    "example": "bash ./scripts/backup-home.sh --source \"$HOME\" --destination /mnt/backup/home",
+    "details": "Uses rsync archive, hard links, ACL, xattrs, numeric IDs and one-filesystem traversal. Resolves and rejects identical/nested source and destination paths.",
+    "effects": "With --apply, copies/updates destination files but does not delete extra destination files. Without --apply it only previews.",
+    "exit": "Exit 0 for successful rsync; exit 1 for validation errors or rsync failure. No distinct partial/metadata compatibility status.",
+    "cautions": "Must create destination first, on a separate physical disk. NTFS/exFAT may not preserve Linux ownership, permissions, ACL and xattrs; full recovery is NOT guaranteed. Never rely solely on dry run."
+  },
+  {
+    "slug": "verify-backup",
+    "title": "Verify backup tree",
+    "impact": "Read-only on source/destination; writes a temporary comparison report",
+    "arguments": "--source DIR, --destination DIR, optional --exclude-from FILE, --help",
+    "requirements": "rsync, readlink, mktemp",
+    "example": "bash ./scripts/verify-backup.sh --source \"$HOME\" --destination /mnt/backup/home",
+    "details": "Uses rsync --checksum --dry-run --itemize-changes. --delete is comparison-only because --dry-run is present.",
+    "effects": "Reads both directory trees, creates a temporary file using mktemp, removes it on exit.",
+    "exit": "Exit 0 when the rsync comparison has no reported differences, 2 when differences are reported, 1 on validation/rsync errors.",
+    "cautions": "Both sides must remain accessible and stable during comparison. Metadata preservation can fail on NTFS/exFAT. Verification does not substitute a restore test."
+  },
+  {
+    "slug": "inventory-packages",
+    "title": "Package inventory",
+    "impact": "Read-only",
+    "arguments": "No arguments",
+    "requirements": "optional apt-mark, dpkg-query, flatpak, snap, pipx, npm, cargo, awk, sed, sort",
+    "example": "bash ./scripts/inventory-packages.sh",
+    "details": "Records distribution and available APT/dpkg, Flatpak, Snap, pipx, global npm and Cargo inventories.",
+    "effects": "stdout may reveal installed tooling and project environment.",
+    "exit": "No reliable per-manager error aggregate; silently suppressed errors are possible.",
+    "cautions": "This is a list, not an installation script. Package names and availability vary by distribution and release."
+  },
+  {
+    "slug": "inventory-services",
+    "title": "systemd unit inventory",
+    "impact": "Read-only",
+    "arguments": "No arguments",
+    "requirements": "systemctl (systemd)",
+    "example": "bash ./scripts/inventory-services.sh",
+    "details": "Lists enabled system services/timers and enabled user units if the session exposes an accessible user systemd manager.",
+    "effects": "stdout may expose sensitive service names.",
+    "exit": "Exits 1 without systemctl; unit-list commands use || true, so errors may be hidden.",
+    "cautions": "Does not list every active, generated, static or disabled service. Do not blindly enable inventoried units after reinstall."
+  },
+  {
+    "slug": "inventory-all",
+    "title": "Collect rebuild inventories",
+    "impact": "Writes local reports",
+    "arguments": "No arguments",
+    "requirements": "bash, date, mkdir, inventory-packages.sh, inventory-services.sh",
+    "example": "bash ./scripts/inventory-all.sh",
+    "details": "Collects package and service inventories in a timestamped report directory.",
+    "effects": "Creates reports/rebuild-YYYYMMDD-HHMMSS/packages.txt and services.txt.",
+    "exit": "Child command failures are warned about but the script may still return 0.",
+    "cautions": "Existing reports remain untouched. Output permissions currently depend on umask; treat reports as private."
+  },
+  {
+    "slug": "preflight-reinstall",
+    "title": "Reinstallation preflight",
+    "impact": "Read-only",
+    "arguments": "--backup DIR required; --source DIR defaults to HOME; --help",
+    "requirements": "findmnt, lsblk, readlink, df, comm, grep, sed, awk",
+    "example": "bash ./scripts/preflight-reinstall.sh --source \"$HOME\" --backup /mnt/backup/home",
+    "details": "Checks paths, block devices and parent disks, backup mount flags, eCryptfs, firmware boot mode and free space; prints manual checklist.",
+    "effects": "stdout, no filesystem/mount changes.",
+    "exit": "Exit 1 for a detected failure or usage error. Current version can still exit 0 when disk identity is unresolved; do not interpret this as proof of safety.",
+    "cautions": "An inconclusive physical separation check must block manual destructive work even if the tool reports no blocking failures. LUKS/LVM/RAID/multi-device mounts require care; fix tracked in issue #8."
+  }
+] as const;

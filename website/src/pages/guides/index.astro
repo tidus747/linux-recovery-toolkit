@@ -1,0 +1,7 @@
+---
+import Layout from "../../layouts/base.astro";
+import Panel from "../../components/terminal-panel.astro";
+import { recoveryGuides } from "../../data/recovery-guides";
+const base=import.meta.env.BASE_URL;
+---
+<Layout title="Recovery guides"><h1 class="mb-3 text-2xl text-accent">~ guides</h1><p class="mb-8 text-dim">Carefully scoped workflows for common recovery decisions. Always inspect the real target system first.</p><div class="grid gap-5">{recoveryGuides.map(guide=><Panel label={guide.slug}><p>{guide.summary}</p><a class="mt-3 inline-block text-accent underline" href={`${base}guides/${guide.slug}/`}>Read guide →</a></Panel>)}</div></Layout>

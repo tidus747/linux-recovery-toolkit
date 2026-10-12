@@ -1,0 +1,14 @@
+---
+import Layout from "../../layouts/base.astro";
+import Panel from "../../components/terminal-panel.astro";
+import { recoveryGuides } from "../../data/recovery-guides";
+export function getStaticPaths() { return recoveryGuides.map(guide => ({ params: { slug: guide.slug }, props: { guide } })); }
+const { guide } = Astro.props;
+const base=import.meta.env.BASE_URL;
+---
+<Layout title={guide.title} description={guide.summary}>
+<p class="mb-4 text-xs text-dim"><a class="text-accent underline" href={`${base}guides/`}>~ recovery guides</a> / {guide.slug}</p>
+<h1 class="mb-3 text-2xl text-accent">{guide.title}</h1>
+<p class="mb-8 text-dim">{guide.summary}</p>
+<div class="grid gap-6"><Panel label="inspect / understand"><p>{guide.inspection}</p></Panel><Panel label="decision / limits"><p>{guide.decision}</p></Panel><Panel label="verify / before change"><p>{guide.verification}</p></Panel></div>
+</Layout>
