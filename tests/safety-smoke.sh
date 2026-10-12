@@ -56,7 +56,7 @@ make_collector() {
     local dir="$temp_dir/$name/scripts"
 
     mkdir -p "$dir" || die "cannot make $dir"
-    cp "$repo_dir/scripts/$script_name" "$dir/" || die "cannot copy $script_name"
+    cp "$repo_dir/scripts/$script_name.sh" "$dir/" || die "cannot copy $script_name.sh"
     for helper in "$@"; do
         printf '#!/usr/bin/env bash\nprintf "example report\\n"\n' >"$dir/$helper.sh"
         chmod 0644 "$dir/$helper.sh" || die "cannot set helper mode"
