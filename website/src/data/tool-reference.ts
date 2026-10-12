@@ -1,4 +1,4 @@
-// Maintained against the v0.3 Bash scripts in scripts/. Changes to CLI behavior must update this table.
+// Maintained against the current Bash scripts in scripts/.
 export const toolReference = [
   {
     "slug": "audit-system",
@@ -40,13 +40,13 @@ export const toolReference = [
     "slug": "smart-health",
     "title": "SMART health",
     "impact": "Read-only, uses sudo",
-    "arguments": "Optional one or more block devices as positional arguments",
-    "requirements": "smartctl (smartmontools), lsblk, awk, sudo",
-    "example": "bash ./scripts/smart-health.sh /dev/sdX",
-    "details": "For each selected device, prints limited SMART health/attribute/self-test lines; with no arguments, enumerates disks using lsblk.",
-    "effects": "stdout; disk paths and models are shown, serials and WWNs are not requested.",
-    "exit": "Exits 1 when required tools or all disks are absent; currently does not properly propagate smartctl failures through awk.",
-    "cautions": "USB/SATA bridges may conceal SMART or require a smartctl -d setting. An empty or incomplete report is UNKNOWN, not healthy. No SMART self-test is launched."
+    "arguments": "Optional --device-type TYPE; optional disk device paths; --help",
+    "requirements": "smartctl (smartmontools), lsblk, awk, grep, mktemp, sudo (when not root)",
+    "example": "bash ./scripts/smart-health.sh --device-type sat /dev/sdX",
+    "details": "Read-only SMART inspection with per-disk PASS, WARN and UNKNOWN statuses; retains smartctl status bitmask including device, USB bridge, self-test and historic health evidence.",
+    "effects": "Reads disks and reports selected health lines. Uses private temporary data; device names/models appear but serial/WWN lines are excluded.",
+    "exit": "0: all disks PASS; 1: one or more WARN (health/history evidence); 2: UNKNOWN/incomplete status without WARN. Warnings take precedence when both conditions occur.",
+    "cautions": "SMART PASS is not a reliability guarantee. Unknown state is not healthy. Use explicit --device-type only for verified USB/RAID bridges; never guess."
   },
   {
     "slug": "audit-all",
@@ -56,9 +56,9 @@ export const toolReference = [
     "requirements": "date, mkdir, bash and helper scripts; SMART requires smartmontools/sudo",
     "example": "bash ./scripts/audit-all.sh",
     "details": "Collects system, storage, HOME and SMART reports into a timestamped local directory.",
-    "effects": "Creates reports/YYYYMMDD-HHMMSS/*.txt under the repository. Reports are Git-ignored, but not necessarily private by permissions.",
-    "exit": "Current implementation may return 0 despite child failures. Current checkout stores helper scripts as non-executable, so direct invocation can fail; tracked in issue #13.",
-    "cautions": "Use individual scripts for reliable inspection until issue #13 is resolved. Never publish raw reports."
+    "effects": "Creates private reports/YYYYMMDD-HHMMSS/*.txt under the repository with umask 077.",
+    "exit": "Returns non-zero if one or more child reports fail; retains their individual report files.",
+    "cautions": "SMART unavailability makes collection incomplete; keep reports private."
   },
   {
     "slug": "backup-home",
@@ -117,8 +117,8 @@ export const toolReference = [
     "example": "bash ./scripts/inventory-all.sh",
     "details": "Collects package and service inventories in a timestamped report directory.",
     "effects": "Creates reports/rebuild-YYYYMMDD-HHMMSS/packages.txt and services.txt.",
-    "exit": "Child command failures are warned about but the script may still return 0.",
-    "cautions": "Existing reports remain untouched. Output permissions currently depend on umask; treat reports as private."
+    "exit": "Returns non-zero if any child inventory fails.",
+    "cautions": "Private reports are created with umask 077. Do not publish them."
   },
   {
     "slug": "preflight-reinstall",
@@ -129,7 +129,7 @@ export const toolReference = [
     "example": "bash ./scripts/preflight-reinstall.sh --source \"$HOME\" --backup /mnt/backup/home",
     "details": "Checks paths, block devices and parent disks, backup mount flags, eCryptfs, firmware boot mode and free space; prints manual checklist.",
     "effects": "stdout, no filesystem/mount changes.",
-    "exit": "Exit 1 for a detected failure or usage error. Current version can still exit 0 when disk identity is unresolved; do not interpret this as proof of safety.",
-    "cautions": "An inconclusive physical separation check must block manual destructive work even if the tool reports no blocking failures. LUKS/LVM/RAID/multi-device mounts require care; fix tracked in issue #8."
+    "exit": "0: checks completed with no blocking failures; 1: NOT READY; 2: INCONCLUSIVE backing disks.",
+    "cautions": "Zero does not verify that a backup is usable. Layered storage/multi-device setups and manual checks still require careful inspection."
   }
 ] as const;
