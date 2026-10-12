@@ -1,0 +1,41 @@
+---
+// Adapted from Astro Distro's terminal-themed layout by ansango (MIT).
+import "../styles/global.css";
+interface Props { title: string; description?: string; }
+const { title, description = "Conservative tools for auditing, backing up and rebuilding Linux systems." } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const canonical = new URL(Astro.url.pathname, Astro.site).toString();
+---
+<!doctype html>
+<html lang="en" data-theme="mint">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#08090b" />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href={`${base}favicon.svg`} type="image/svg+xml" />
+    <title>{title} | Linux Recovery Toolkit</title>
+  </head>
+  <body class="min-h-screen bg-bg p-6 font-mono text-sm leading-relaxed text-fg antialiased sm:text-base md:py-10">
+    <div class="mx-auto max-w-4xl">
+      <header class="mb-10 flex flex-wrap items-center justify-between gap-4 border-b border-border pb-4">
+        <a href={base} class="font-bold text-accent hover:underline">~/linux-recovery-toolkit</a>
+        <nav aria-label="Main navigation" class="flex flex-wrap gap-x-5 gap-y-2 text-sm">
+          <a href={base} class="hover:text-accent">home</a>
+          <a href={`${base}getting-started/`} class="hover:text-accent">start</a>
+          <a href={`${base}tools/`} class="hover:text-accent">tools</a>
+          <a href={`${base}safety/`} class="hover:text-accent">safety</a>
+          <a href="https://github.com/tidus747/linux-recovery-toolkit" class="hover:text-accent">github ↗</a>
+        </nav>
+      </header>
+      <main><slot /></main>
+      <footer class="mt-16 border-t border-border pt-5 text-xs text-dim">
+        <div class="flex flex-wrap justify-between gap-3">
+          <span><span class="text-accent">●</span> Observe first. Change later.</span>
+          <span>GPL-3.0 · <a class="hover:text-accent" href="https://github.com/ansango/astro-distro">Astro Distro (MIT) ↗</a></span>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>

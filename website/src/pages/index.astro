@@ -1,0 +1,53 @@
+---
+import Layout from "../layouts/base.astro";
+import Panel from "../components/terminal-panel.astro";
+const base = import.meta.env.BASE_URL;
+const tools = [
+  ["audit", "Read-only system, storage and HOME inspection", "audit-all.sh"],
+  ["backup", "Dry-run-first rsync copy and verification", "backup-home.sh"],
+  ["inventory", "Packages and systemd rebuild inventory", "inventory-all.sh"],
+  ["preflight", "Reinstall checks before destructive operations", "preflight-reinstall.sh"],
+];
+---
+<Layout title="Home">
+  <section class="mb-10 grid gap-6 md:grid-cols-[1fr_2fr] md:items-center">
+    <div class="text-center text-accent" aria-hidden="true"><pre class="inline-block text-left text-xs leading-none sm:text-sm">       .--.
+      |o_o |
+      |:_/ |
+     //   \\ \\
+    (|     | )
+   /'\\_   _/`\\
+   \\___)=(___/</pre></div>
+    <div>
+      <p class="text-accent">~/recovery/fastfetch</p>
+      <h1 class="mb-3 text-2xl font-bold sm:text-3xl">Linux Recovery Toolkit</h1>
+      <p class="mb-2 text-dim">Version <span class="text-fg">v0.3</span> · Bash · Linux · GPL-3.0</p>
+      <p>Audit, back up, verify and prepare a clean Linux rebuild without blindly carrying legacy state.</p>
+      <p class="mt-3 font-semibold text-accent">Observe first. Change later.</p>
+    </div>
+  </section>
+  <section class="mb-10">
+    <h2 class="mb-5 font-semibold text-accent">~ about / lazygit</h2>
+    <Panel label="status · main">
+      <p class="mb-2">Safe recovery begins with knowing what is actually on the machine.</p>
+      <p class="text-dim">Read-only audits → assess → classify → back up → verify → preflight → reinstall → restore selectively</p>
+    </Panel>
+  </section>
+  <section class="mb-10">
+    <h2 class="mb-5 font-semibold text-accent">~ tools / ranger</h2>
+    <div class="grid gap-5 sm:grid-cols-2">
+      {tools.map(([name, description, script]) => <Panel label={name}>
+        <p class="font-semibold text-fg">{script}</p><p class="mt-2 text-sm text-dim">{description}</p>
+      </Panel>)}
+    </div>
+  </section>
+  <section class="mb-10">
+    <h2 class="mb-5 font-semibold text-accent">~ getting started / terminal</h2>
+    <Panel label="read-only first">
+      <pre class="overflow-x-auto text-sm text-fg"><code><span class="text-accent">$</span> git clone https://github.com/tidus747/linux-recovery-toolkit.git
+<span class="text-accent">$</span> cd linux-recovery-toolkit
+<span class="text-accent">$</span> bash ./scripts/audit-system.sh</code></pre>
+    </Panel>
+    <div class="mt-4 flex flex-wrap gap-5 text-accent"><a class="underline" href={`${base}getting-started/`}>Read quick start →</a><a class="underline" href={`${base}tools/`}>Explore scripts →</a><a class="underline" href={`${base}safety/`}>Safety model →</a></div>
+  </section>
+</Layout>

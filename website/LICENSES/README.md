@@ -1,0 +1,1 @@
+This website adapts components and visual styles from Astro Distro by ansango (MIT). See ASTRO-DISTRO-MIT.txt for the required notice. The Linux Recovery Toolkit scripts remain licensed under GPL-3.0.

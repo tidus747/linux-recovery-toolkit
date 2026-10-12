@@ -1,0 +1,15 @@
+---
+import Layout from "../layouts/base.astro";
+import Panel from "../components/terminal-panel.astro";
+---
+<Layout title="Safety model">
+  <h1 class="mb-2 text-2xl text-accent">~ safety</h1>
+  <p class="mb-8 text-dim">Observe first. Change later.</p>
+  <div class="grid gap-6">
+    <Panel label="read-only"><p>Audit disks, system information and configuration before modifying anything.</p></Panel>
+    <Panel label="local reports"><p>Reports may expose usernames, paths, installed applications and services. Keep them private and outside Git.</p></Panel>
+    <Panel label="write boundary"><p><code>backup-home.sh</code> defaults to dry run. <code>--apply</code> enables file writes; it does not make a backup automatically reliable.</p></Panel>
+    <Panel label="verification"><p>Check copied files directly, verify data integrity, and ensure that backups reside on a separate physical disk. Filesystem metadata on NTFS/exFAT may not be preserved by the current rsync options.</p></Panel>
+    <Panel label="preflight"><p>The v0.3 preflight cannot prove safety if it cannot identify the backing physical disks. An inconclusive result is not permission to partition or format.</p></Panel>
+  </div>
+</Layout>
