@@ -23,3 +23,12 @@ The website is static, has no live system integrations, and must not publish gen
 ## Attribution
 
 Styling and TUI components are adapted from Astro Distro by ansango under the MIT license. Required notice in `LICENSES/ASTRO-DISTRO-MIT.txt`. The toolkit is GPL-3.0. The site content is independent of runtime Linux scripts.
+
+## Content structure
+
+- `src/data/tool-reference.ts`: one structured reference entry for each v0.3 script.
+- `src/pages/tools/[slug].astro`: static generated manual for each script.
+- `src/data/recovery-guides.ts`: editorial recovery and privacy guidance.
+- `src/pages/guides/[slug].astro`: static generated guide pages.
+
+After a script changes, review its manual and safety caveats in the same PR. The documentation does not guarantee safe behavior for untested distributions or filesystems.
