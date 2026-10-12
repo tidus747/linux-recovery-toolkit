@@ -29,6 +29,9 @@ jobs:
       - name: Build site
         working-directory: website
         run: bun run build
+      - name: Verify internal links
+        working-directory: website
+        run: bun run check:links
       - uses: actions/upload-pages-artifact@v3
         if: github.event_name != 'pull_request'
         with:

@@ -32,3 +32,7 @@ Styling and TUI components are adapted from Astro Distro by ansango under the MI
 - `src/pages/guides/[slug].astro`: static generated guide pages.
 
 After a script changes, review its manual and safety caveats in the same PR. The documentation does not guarantee safe behavior for untested distributions or filesystems.
+
+## Link validation
+
+Astro is configured with `trailingSlash: always` so `import.meta.env.BASE_URL` includes the required `/` before paths such as `tools/`. Run `bun run build && bun run check:links` to test all internal links from the generated site. CI runs this check before publishing to Pages.
