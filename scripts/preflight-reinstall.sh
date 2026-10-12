@@ -88,6 +88,12 @@ have_common_line() {
 source_dir=${HOME:-}
 backup_dir=''
 failures=0
+unknown_checks=0
+
+unknown() {
+    printf '[UNKNOWN] %s\n' "$*"
+    unknown_checks=$((unknown_checks + 1))
+}
 
 while (( $# > 0 )); do
     case "$1" in
@@ -138,13 +144,13 @@ backup_block=$(resolve_block_source "$backup_dir" || true)
 if [[ -n "$source_block" ]]; then
     pass "Source block device resolved to $source_block"
 else
-    warn 'Could not resolve the source to a block device.'
+    unknown 'Could not resolve the source to a block device.'
 fi
 
 if [[ -n "$backup_block" ]]; then
     pass "Backup block device resolved to $backup_block"
 else
-    warn 'Could not resolve the backup to a block device.'
+    unknown 'Could not resolve the backup to a block device.'
 fi
 
 if [[ -n "$source_block" && -n "$backup_block" ]]; then
@@ -152,7 +158,7 @@ if [[ -n "$source_block" && -n "$backup_block" ]]; then
     backup_disks=$(physical_disks "$backup_block")
 
     if [[ -z "$source_disks" || -z "$backup_disks" ]]; then
-        warn 'Could not resolve physical parent disks for both paths.'
+        unknown 'Could not resolve physical parent disks for both paths.'
     elif have_common_line "$source_disks" "$backup_disks"; then
         fail 'Source and backup share at least one physical disk.'
     else
