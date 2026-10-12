@@ -1,0 +1,25 @@
+---
+import Layout from "../../layouts/base.astro";
+import Panel from "../../components/terminal-panel.astro";
+import { toolReference } from "../../data/tool-reference";
+
+export function getStaticPaths() {
+  return toolReference.map(tool => ({ params: { slug: tool.slug }, props: { tool } }));
+}
+const { tool } = Astro.props;
+const base = import.meta.env.BASE_URL;
+---
+<Layout title={tool.title} description={tool.details}>
+  <p class="mb-4 text-xs text-dim"><a class="text-accent hover:underline" href={`${base}tools/`}>~ tools</a> / {tool.slug}</p>
+  <h1 class="mb-2 text-2xl text-accent">{tool.title}</h1>
+  <p class="mb-8 text-dim">{tool.impact}</p>
+  <div class="grid gap-6">
+    <Panel label="purpose"><p>{tool.details}</p></Panel>
+    <Panel label="syntax"><p class="mb-3 text-sm text-dim">{tool.arguments}</p><pre class="overflow-x-auto whitespace-pre-wrap break-words text-sm text-fg"><code>{tool.example}</code></pre></Panel>
+    <Panel label="requirements"><p>{tool.requirements}</p></Panel>
+    <Panel label="writes and privacy"><p>{tool.effects}</p></Panel>
+    <Panel label="exit behavior"><p>{tool.exit}</p></Panel>
+    <Panel label="limitations / safety"><p>{tool.cautions}</p></Panel>
+  </div>
+  <p class="mt-7 text-sm">Read the <a class="text-accent underline" href={`https://github.com/tidus747/linux-recovery-toolkit/blob/main/scripts/${tool.slug}.sh`}>current source code ↗</a> before using a command on important data.</p>
+</Layout>
