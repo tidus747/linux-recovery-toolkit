@@ -205,5 +205,10 @@ if (( failures > 0 )); then
     exit 1
 fi
 
+if (( unknown_checks > 0 )); then
+    printf 'Preflight result: INCONCLUSIVE (%d unresolved disk check(s)).\n' "$unknown_checks" >&2
+    exit 2
+fi
+
 printf 'Preflight result: no blocking storage failures detected.\n'
 printf 'This does not replace manual backup verification.\n'

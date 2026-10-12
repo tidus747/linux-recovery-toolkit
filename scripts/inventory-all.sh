@@ -22,7 +22,8 @@ run_report() {
     printf 'Collecting %s...\n' "$name"
 
     if ! bash "$script" >"$report_dir/$name.txt" 2>&1; then
-        printf '  %s completed with warnings; inspect %s.txt\n' "$name" "$name" >&2
+        printf '  %s FAILED; inspect %s.txt\n' "$name" "$name" >&2
+        failed_reports=$((failed_reports + 1))
     fi
 }
 
