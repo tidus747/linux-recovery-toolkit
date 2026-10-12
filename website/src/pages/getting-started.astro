@@ -1,0 +1,19 @@
+---
+import Layout from "../layouts/base.astro";
+import Panel from "../components/terminal-panel.astro";
+const base=import.meta.env.BASE_URL;
+---
+<Layout title="Getting started">
+  <h1 class="mb-2 text-2xl text-accent">~ getting-started</h1>
+  <p class="mb-8 text-dim">Start with read-only inspection. Do not run a reinstall based on a report alone.</p>
+  <div class="grid gap-6">
+    <Panel label="01 · prerequisites"><p>Linux with Bash and standard inspection utilities. Some commands require additional tools such as <code>smartctl</code> or <code>rsync</code>. Consult each script before use; distribution compatibility is not universally guaranteed.</p></Panel>
+    <Panel label="02 · clone"><pre class="overflow-x-auto"><code>git clone https://github.com/tidus747/linux-recovery-toolkit.git
+cd linux-recovery-toolkit</code></pre></Panel>
+    <Panel label="03 · inspect"><pre class="overflow-x-auto"><code>bash ./scripts/audit-system.sh
+bash ./scripts/audit-storage.sh
+bash ./scripts/audit-home.sh</code></pre><p class="mt-3 text-dim">These inspection scripts do not modify filesystems.</p></Panel>
+    <Panel label="04 · proceed deliberately"><p>Review mount layouts and what should be preserved. Use the backup script's default dry run before any <code>--apply</code> operation, then verify backup contents on an independent disk.</p></Panel>
+  </div>
+  <p class="mt-6"><a class="text-accent underline" href={`${base}tools/`}>Browse tool reference →</a></p>
+</Layout>

@@ -1,0 +1,25 @@
+---
+import Layout from "../../layouts/base.astro";
+import Panel from "../../components/terminal-panel.astro";
+const commands=[
+ ["audit-system.sh","Distribution, kernel, systemd, desktop and hardware","Read-only"],
+ ["audit-storage.sh","Filesystems, mounts and block devices","Read-only"],
+ ["audit-home.sh","HOME directory usage","Read-only"],
+ ["smart-health.sh","Selected SMART health metrics","Read-only; may ask for sudo"],
+ ["audit-all.sh","Local timestamped audit reports","Writes reports"],
+ ["backup-home.sh","Guarded rsync backup","Dry run unless --apply"],
+ ["verify-backup.sh","Checksum comparison without modifying the backup","Read-only"],
+ ["inventory-packages.sh","Package manager inventory","Read-only"],
+ ["inventory-services.sh","Enabled systemd units","Read-only"],
+ ["inventory-all.sh","Timestamped rebuild inventory","Writes reports"],
+ ["preflight-reinstall.sh","Storage checks before reinstall","Read-only; unknown disk identity is not a pass"],
+];
+---
+<Layout title="Tool reference">
+  <h1 class="mb-2 text-2xl text-accent">~ tools / ranger</h1>
+  <p class="mb-8 text-dim">v0.3 command index. Detailed per-tool manuals are tracked in <a class="underline" href="https://github.com/tidus747/linux-recovery-toolkit/issues/6">issue #6</a>.</p>
+  <div class="grid gap-5">{commands.map(([name,description,impact]) => <Panel label={name}>
+    <p>{description}</p><p class="mt-2 text-xs text-accent">{impact}</p>
+    <a class="mt-2 inline-block text-xs text-dim underline hover:text-accent" href={`https://github.com/tidus747/linux-recovery-toolkit/blob/main/scripts/${name}`}>View implementation ↗</a>
+  </Panel>)}</div>
+</Layout>

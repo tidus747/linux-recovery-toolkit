@@ -1,0 +1,10 @@
+---
+import Container from "./tui/commons/container.astro";
+import Label from "./tui/commons/label.astro";
+interface Props { label: string; }
+const { label } = Astro.props;
+---
+<Container>
+  <Label>{label}</Label>
+  <div class="w-full p-4"><slot /></div>
+</Container>
