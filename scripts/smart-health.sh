@@ -101,12 +101,14 @@ for device in "${devices[@]}"; do
     fi
     smart_args+=("$device")
 
-    smart_status=0
-    if (( EUID == 0 )); then
-        smartctl "${smart_args[@]}" >"$tmp_output" 2>/dev/null || smart_status=$?
-    else
-        sudo smartctl "${smart_args[@]}" >"$tmp_output" 2>/dev/null || smart_status=$?
+    # Only the device query needs elevated privileges; the caller owns
+    # the private temporary output file and performs the redirection.
+    smart_command=(smartctl)
+    if (( EUID != 0 )); then
+        smart_command=(sudo smartctl)
     fi
+    smart_status=0
+    "${smart_command[@]}" "${smart_args[@]}" >"$tmp_output" 2>/dev/null || smart_status=$?
 
     # Show only selected fields; suppress serials/WWNs and raw diagnostics.
     awk '
