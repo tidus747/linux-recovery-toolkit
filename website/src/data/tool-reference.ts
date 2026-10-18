@@ -1,4 +1,4 @@
-// Maintained against the current Bash scripts in scripts/.
+// Maintained against current scripts/ source.
 export const toolReference = [
   {
     "slug": "audit-system",
@@ -35,6 +35,18 @@ export const toolReference = [
     "effects": "stdout may expose directory names; some paths are replaced with <HOME>.",
     "exit": "Exits 1 for missing or invalid HOME. The du pipeline can hide read errors; review missing entries.",
     "cautions": "Running under sudo can change HOME and inspect a different account. Permission failures are suppressed in du."
+  },
+  {
+    "slug": "audit-gpu",
+    "title": "Graphics and driver audit",
+    "impact": "Read-only; uses a private temporary log buffer",
+    "arguments": "No arguments; --help",
+    "requirements": "Bash, lspci (pciutils), awk; optional journalctl/dmesg, lsmod, xrandr and DRM sysfs",
+    "example": "bash ./scripts/audit-gpu.sh",
+    "details": "Inventories graphics PCI devices, drivers and connectors; counts selected GPU error signatures from current-boot kernel messages without exposing raw log lines.",
+    "effects": "Reads system state; processes log messages in a private temporary file deleted on exit. No driver, module, configuration or boot changes.",
+    "exit": "0 PASS: limited evidence/no matched errors; 1 WARN: matching errors; 2 UNKNOWN: incomplete essential data. WARN takes precedence.",
+    "cautions": "Log patterns are heuristics. A PASS does not prove working graphics. Requires validation on real hardware; never automatically blacklist a driver."
   },
   {
     "slug": "smart-health",
