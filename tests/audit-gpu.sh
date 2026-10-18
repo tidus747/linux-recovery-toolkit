@@ -67,7 +67,7 @@ run_case intel-hang hybrid intel unavailable 1 'i915 errors: 1'
 run_case missing-firmware hybrid firmware unavailable 1 'Firmware errors: 1'
 run_case pci-unavailable unavailable clean unavailable 2 'Result: UNKNOWN'
 run_case pci-missing missing clean unavailable 2 'No PCI graphics controller'
-run_case kernel-unavailable hybrid unavailable unavailable 2 'Kernel messages unavailable'
+run_case kernel-unavailable hybrid unavailable unavailable 2 'kernel messages unavailable or empty'
 run_case fallback hybrid unavailable clean 0 'Evidence source: dmesg'
 
 export GPU_AUDIT_DRM_ROOT="$sandbox/empty"
