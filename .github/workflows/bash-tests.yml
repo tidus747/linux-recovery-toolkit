@@ -27,4 +27,7 @@ jobs:
             bash -n "$script"
           done
       - name: Regression tests
-        run: bash tests/safety-smoke.sh
+        run: |
+          for test in tests/*.sh; do
+            bash "$test"
+          done
