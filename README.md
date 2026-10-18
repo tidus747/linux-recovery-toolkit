@@ -42,6 +42,7 @@ Read-only inspection tools:
 - `audit-system.sh` - distribution, kernel, systemd, desktop and basic hardware
 - `audit-storage.sh` - disks, filesystems, mounts and space usage
 - `audit-home.sh` - top-level HOME usage, including hidden directories
+- `audit-gpu.sh` - read-only graphics driver and GPU error diagnostics
 - `smart-health.sh` - focused SMART health information without disk serial numbers
 - `audit-all.sh` - collect the above reports into a local timestamped directory
 
@@ -111,6 +112,7 @@ cd linux-recovery-toolkit
 bash ./scripts/audit-system.sh
 bash ./scripts/audit-storage.sh
 bash ./scripts/audit-home.sh
+bash ./scripts/audit-gpu.sh
 bash ./scripts/smart-health.sh
 ```
 
@@ -121,6 +123,8 @@ bash ./scripts/audit-all.sh
 ```
 
 Reports are written below `reports/`, which is deliberately excluded from Git.
+
+GPU diagnostics: [docs/gpu-audit.md](docs/gpu-audit.md).
 
 ## Backup usage
 
